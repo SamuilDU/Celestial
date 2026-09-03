@@ -40,31 +40,5 @@ def fractured_rk4(k, param, var, h, k_vec):
     return var[k + 1], param[k + 1]
 
 
-def Langrange_plys(x, poles_x, poles_y):
-
-    n = len(poles_x)
-
-    Lagrange_basis = np.ones(n)
-
-    for j in range(n):
-        coefficients = np.ones(n)
-        for m in range(n):
-           if m != j:
-
-            coefficients[m] = (x - poles_x[m])/(poles_x[j] - poles_x[m])
-
-        Lagrange_basis[j] = np.prod(coefficients)
-           
-
-    return sum(np.multiply(poles_y, Lagrange_basis))
-
-def Chebyshev_nodes(n):
-
-    nodes = np.ones(n) 
-    for k in range(n):
-       nodes[k] = np.cos((k + 0.5)*pi/n)
-
-    return nodes
-
 def linear(x, t):
     return x

@@ -6,14 +6,14 @@ e = np.e
 
 def runge_kutta_family(stages, time_vec, stage_vec, A_matrix, n, h, initial_conditions, function):
 
-    t, y = np.append([initial_conditions[0], np.zeros(n - 1)]), np.append([initial_conditions[1], np.zeros(n - 1)])
-    k_vec = np.zeros(len(stages))
+    t, y = np.append(initial_conditions[0], np.zeros(n - 1)), np.append(initial_conditions[1], np.zeros(n - 1))
+    k_vec = np.zeros(stages)
 
-    for k in range(n): 
-        for i in range(n):
+    for k in range(n - 1): 
+        for i in range(n - 1):
             for j in range(i):
 
-                k_vec[i] = function(t[k] + time_vec[i] * h, y[k] + sum(np.multiply(A_matrix[i, j] * k_vec[j]))*h)
+                k_vec[i] = function(t[k] + time_vec[i] * h, y[k] + sum(A_matrix[i, j] * k_vec[j])*h)
 
         t[k + 1] = t[k] + h
         y[k + 1] = y[k] + h * sum(np.multiply(stage_vec, k_vec))
@@ -21,6 +21,8 @@ def runge_kutta_family(stages, time_vec, stage_vec, A_matrix, n, h, initial_cond
     return t, y
 
 
+
+### Generalize 
 def rk4_cts(param, var, h, function):
 
     k_1 = function(param, var) 
@@ -38,7 +40,3 @@ def fractured_rk4(k, param, var, h, k_vec):
     var[k + 1] = var[k] + h/6 * (k_vec[0] + 2*(k_vec[1] + k_vec[2]) + k_vec[3])
 
     return var[k + 1], param[k + 1]
-
-
-def linear(x, t):
-    return x

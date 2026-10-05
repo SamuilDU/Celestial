@@ -1,35 +1,33 @@
 import numpy as np
 from numpy import linalg as LA
+from itertools import islice
+from concurrent.futures import ProcessPoolExecutor
 
 
 G = 6.67*10**(-11)
 
-#def NetForces(positions, masses):
-#
-#      n = len(masses)
-#      Forces = np.zeros(np.shape(positions))
-#
-#      for i in range(n):
-#            imass = masses[i]
-#            iposition = positions[i]
-#
-#            for jposition, jmass in zip(positions, masses):
-#                  distance = LA.norm(iposition - jposition)
-#            
-#                  if distance > 10**4: #reescale correctly
-#                        Forces[i] += -G * (imass * jmass / distance**2) * (iposition - jposition)/distance 
-#
-#      return Forces
+def chunker(data, num_chunks):
 
-def NetForce(ivector_position, imass, other_masses, other_positions):
+    if num_chunks <= 0:
+        raise ValueError("Number of chunks must be a non-null, positive integer")
+    else: 
+        it = iter(data)
+        return [list(islice(it, num_chunks)) for _ in range((len(data) + num_chunks - 1)//num_chunks)]
 
-      for position, mass in zip(other_positions, other_masses):
 
-            distance = LA.norm(ivector_position - position)
-            acceleration = np.zeros(np.shape(ivector_position))
+def NetForces(positions, masses):
+
+      n = len(masses)
+      Forces = np.zeros(np.shape(positions))
+
+      for i in range(n):
+            imass = masses[i]
+            iposition = positions[i]
+
+            for jposition, jmass in zip(positions, masses):
+                  distance = LA.norm(iposition - jposition)
             
-            if distance > 10**4:
-                 acceleration += (mass / distance**2) * position/distance #Rescale the problem correctly!!! 
+                  if distance > 10**4: #reescale correctly
+                        Forces[i] += -G * (imass * jmass / distance**2) * (iposition - jposition)/distance 
 
-      return - G *imass * acceleration
- 
+      return Forces

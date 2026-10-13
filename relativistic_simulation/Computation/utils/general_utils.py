@@ -1,6 +1,9 @@
-import numpy as np
-from numpy import linalg as LA
+from itertools import islice, chain
+from concurrent.futures import ProcessPoolExecutor
+import numpy.linalg as LA
+import numpy as np  
 
+####
 
 def CanvasSize(particles_position):
 
@@ -36,5 +39,35 @@ def IsEmptyBox(boxCenter_x, boxCenter_y, particles_position):
 
     return value
 
+
+
+#######
+def aux_cumprod(num, start, stop, step):
+    cumprod = 1
+    for k in range(num, start, stop, step):
+        cumprod *= num - k
+
+    return cumprod
+
+#######
+
+def parallelization_scheme(function, *args, **kwargs):
+
+    res = []
+    with ProcessPoolExecutor() as executor:
+        for chunks in executor.map(function, args, kwargs):
+            res.append(chunks)
+
+    res = list(chain.from_iterable(res))
+    return res
+
+
+def chunker(data, num_chunks):
+
+    if num_chunks <= 0:
+        raise ValueError("Number of chunks must be a non-null, positive integer")
+    else: 
+        it = iter(data)
+        return [list(islice(it, num_chunks)) for _ in range((len(data) + num_chunks - 1)//num_chunks)]
 
 

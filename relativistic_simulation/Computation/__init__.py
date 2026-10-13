@@ -1,5 +1,6 @@
-from .Mathematics.Solvers import *
+from .utils.Solvers.Rk import *
+from .utils.Solvers.Verlet import verlet
+from .utils.general_utils import *
 from .Physics.NbodyForce import *
-from .Physics.FastMultipoleMethod.BoxCounting import *
-from .Physics.FastMultipoleMethod.HierarchicalTree import *
+
 
